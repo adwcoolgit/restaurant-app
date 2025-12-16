@@ -2,7 +2,6 @@
 
 import { Header } from '@/components/header/partials/header';
 import { PopupMessage } from '@/components/popup-message';
-import { Button } from '@/components/ui/button';
 import { loginUserSKey, User } from '@/features/auth/type';
 import { ClearStorage } from '@/functions/user-function';
 import { removeItems, useLocalStorageState } from '@/lib/storages';
@@ -66,7 +65,7 @@ export default function Home() {
         </div>
       </Wrapper>
       <Restaurants />
-      <Button onClick={onSignOut}>SIGN OUT</Button>
+      {/* <Button onClick={onSignOut}>SIGN OUT</Button> */}
       <PopupMessage />
     </div>
   );

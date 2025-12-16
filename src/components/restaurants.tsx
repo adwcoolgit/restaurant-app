@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { InfiniteData } from '@tanstack/react-query';
 import { useQuerySearch } from '@/hooks/useQuerySearch';
 import { QueryProps } from '@/features/restaurants/search-restaurants.service';
+import { Button } from './ui/button';
 
 const initResto: Restaurant = {};
 
@@ -47,8 +48,10 @@ export const Restaurants: React.FC<ComponentProps> = ({ className }) => {
     page: page,
     limit: limit,
   };
-  const { data: restaurants } = useRestaurants(initParams);
-  const { data: searchResult } = useQuerySearch(initSearch);
+  const { data: restaurants, hasNextPage: hasNextResto } =
+    useRestaurants(initParams);
+  const { data: searchResult, hasNextPage: hasNextSearch } =
+    useQuerySearch(initSearch);
 
   useEffect(() => {
     if (initSearch.q) setList(searchResult);
@@ -82,6 +85,15 @@ export const Restaurants: React.FC<ComponentProps> = ({ className }) => {
           ))}
         </div>
       </div>
+      {(hasNextResto || hasNextSearch) && (
+        <Button
+          variant='outline'
+          size='xl'
+          className='text-md px-28 py-2.25 font-extrabold'
+        >
+          Show More
+        </Button>
+      )}
     </Wrapper>
   );
 };

@@ -14,3 +14,11 @@ export function safeImageSrc(src?: string, fallback: string = noImage) {
     return url.href.toString();
   } catch (_) {}
 }
+
+export function formatRupiah(value: number) {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(value);
+}

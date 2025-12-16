@@ -1,12 +1,10 @@
 import { useLogin } from '@/features/auth/login.service';
-import { loginTokenSKey, loginUserSKey } from '@/features/auth/type';
 import { LoginPayload, loginSchema } from '@/schemas/login.schema';
 import { setDialog } from '@/states/slices/uiSlice';
-import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { useCallback } from 'react';
 
 export const useLoginAction = () => {
-  const queryClient = useQueryClient();
   const {
     mutateAsync: loginMutate,
     isPending,
@@ -29,7 +27,13 @@ export const useLoginAction = () => {
         setDialog(undefined);
         return res;
       } catch (error) {
-        return error;
+        let message = 'Login failed, please try again';
+
+        if (axios.isAxiosError(error))
+          message = error.response?.data.message || error.message;
+        else if (error instanceof Error) message = error.message;
+
+        return { success: false, message: message };
       }
     },
     [loginMutate]

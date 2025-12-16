@@ -7,13 +7,21 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: 'h-12 px-4',
-        outline: 'h-11 px-4',
+        default: 'px-4',
+        outline: 'border bg-none px-4',
         search: 'rounded-full w-125 h-11 pl-12.5 pr-1.5',
+      },
+      sizes: {
+        default: 'h-12',
+        sm: 'h-7',
+        md: 'h-10',
+        lg: 'h-11',
+        xl: 'h-12',
       },
     },
     defaultVariants: {
       variant: 'default',
+      sizes: 'default',
     },
   }
 );
@@ -21,6 +29,7 @@ const inputVariants = cva(
 function Input({
   className,
   variant,
+  sizes,
   ...props
 }: React.ComponentProps<'input'> &
   VariantProps<typeof inputVariants> & {
@@ -29,7 +38,7 @@ function Input({
   return (
     <input
       data-slot='input'
-      className={cn(inputVariants({ variant, className, ...props }))}
+      className={cn(inputVariants({ className, variant, sizes, ...props }))}
       {...props}
     />
   );

@@ -5,6 +5,8 @@ import { cn, safeImageSrc } from '@/lib/utils';
 import noImage from '@/../public/images/no-image-available.svg';
 import { Icon } from '@iconify/react';
 import { AuthButton } from './auth-button';
+import { useCartSummary } from '@/hooks/useCartSummary';
+import { useRouter } from 'next/navigation';
 
 type Props = User & ComponentProps;
 
@@ -14,18 +16,39 @@ export const ProfileImage: React.FC<Props> = ({
   avatar,
   ...props
 }) => {
+  const { data: itemsInCart } = useCartSummary();
+  const router = useRouter();
+
+  const totalQty: number =
+    itemsInCart?.cart
+      .flatMap((c) => c.items)
+      .reduce((sum, qty) => sum + qty.quantity, 0) ?? 0;
+
+  const btnProfile = () => router.push('/profile');
+
   return (
     <>
       {name && (
-        <div className={cn('flex items-center gap-x-6', className)}>
-          <Icon icon='lets-icons:bag-fill' className='size-8 text-inherit' />
-          <div className='flex items-center gap-x-4'>
+        <div
+          className={cn('flex cursor-pointer items-center gap-x-6', className)}
+        >
+          <div className='relative'>
+            <Icon icon='lets-icons:bag-fill' className='size-8 text-inherit' />
+            <div className='bg-primary-100 flex-center absolute top-0 size-5 translate-x-1/2 justify-self-end rounded-full'>
+              <p className='text-xs text-white'>{totalQty}</p>
+            </div>
+          </div>
+          <div
+            className='relative flex items-center gap-x-4'
+            onClick={btnProfile}
+          >
             <Image
               src={safeImageSrc(avatar) ?? noImage}
               alt='user account'
               sizes='auto'
               className='size-12'
             />
+
             <p className='text-lg font-semibold text-inherit'>{name}</p>
           </div>
         </div>

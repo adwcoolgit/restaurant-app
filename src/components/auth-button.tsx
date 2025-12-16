@@ -19,7 +19,7 @@ export const AuthButton: React.FC<ComponentProps> = () => {
   return (
     <div className='flex flex-row'>
       <Button
-        className='mr-4 flex'
+        className='mr-4 flex text-inherit'
         size='xl'
         variant='outline'
         onClick={onSignIn}

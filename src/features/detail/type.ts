@@ -11,7 +11,7 @@ export type RestaurantDetails = {
   category: string;
   totalMenus: number;
   totalReviews: number;
-  menus: Menu[];
+  menus: Item[];
   reviews: Review[];
 };
 

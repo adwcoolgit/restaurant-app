@@ -1,12 +1,8 @@
 import { useRegister } from '@/features/auth/register.service';
-import {
-  getUserQKey,
-  loginTokenSKey,
-  loginUserSKey,
-  User,
-} from '@/features/auth/type';
+import { loginTokenSKey, loginUserSKey } from '@/features/auth/type';
 import { RegisterPayload, registerSchema } from '@/schemas/register.schema';
 import { setDialog } from '@/states/slices/uiSlice';
+import axios from 'axios';
 import { useCallback } from 'react';
 
 export const useRegisterAction = () => {
@@ -27,8 +23,6 @@ export const useRegisterAction = () => {
       }
 
       try {
-        // Kalau login adalah createAsyncThunk, .unwrap() akan lempar error secara langsung kalau gagal,
-        // await dispatch(login(data)).unwrap();
         const res = await registerMutate(data);
 
         localStorage.setItem(JSON.stringify(data), loginUserSKey());
@@ -36,7 +30,13 @@ export const useRegisterAction = () => {
 
         setDialog(undefined);
       } catch (error) {
-        return { success: false, message: 'Login failed, please try again' };
+        let message = 'Login failed, please try again';
+
+        if (axios.isAxiosError(error))
+          message = error.response?.data.message || error.message;
+        else if (error instanceof Error) message = error.message;
+
+        return { success: false, message: message };
       }
 
       return { success: true, message: 'Request submitted' };

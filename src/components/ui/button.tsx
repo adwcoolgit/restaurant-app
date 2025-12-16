@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default: 'bg-white hover:bg-pressed-button hover:bg-neutral-200',
         auth: 'bg-primary-100 text-white hover:bg-primary-100/80',
         outline:
-          'bg-transparent hover:bg-neutral-100/20 text-white hover:text-white border-2 border-neutral-300',
+          'bg-transparent hover:bg-neutral-100/20 text-white hover:mix-blend-difference border-2 border-neutral-300',
         borderless: 'bg-transparent hover:bg-transparent text-black',
       },
       size: {

@@ -6,36 +6,47 @@ import { useResto } from '@/hooks/useResto';
 import Image from 'next/image';
 import { use, useEffect, useState } from 'react';
 import noImage from '@/../public/images/no-image-available.svg';
-import { safeImageSrc } from '@/lib/utils';
+import { formatRupiah, safeImageSrc } from '@/lib/utils';
 import { ImageFull } from '@/components/full-image';
 import { useDispatch } from 'react-redux';
 import { fullImage } from '@/states/slices/uiSlice';
 import { Icon } from '@iconify/react';
 import { Button } from '@/components/ui/button';
 import { ItemMenu } from '@/constant/category';
-import { ItemList } from '@/components/item-list';
 import { ItemCard } from '@/components/items-card';
+import { PopupMessage } from '@/components/popup-message';
+import { useCartSummary } from '@/hooks/useCartSummary';
+import { useParams } from 'next/navigation';
 
-interface PageParam {
-  params: Promise<{ id: string }>;
-}
-
-export default function RestoDetail({ params }: PageParam) {
-  const { id } = use(params);
+export default function RestoDetail() {
+  const { id } = useParams<{ id: string }>();
   const { data: resto } = useResto(id);
+  const { data: itemsInCart } = useCartSummary();
   const [selected, setSelected] = useState<number | undefined>(undefined);
   const [selectedMenu, setSelectedMenu] = useState<string>('all menu');
-  const distpatch = useDispatch();
+  const dispatch = useDispatch();
 
   function clickImage(index: number) {
     setSelected(index);
-    distpatch(fullImage(true));
+    dispatch(fullImage(true));
   }
 
   const itemFilter =
     selectedMenu.toLowerCase() !== 'all menu'
       ? resto?.menus.filter((a) => a.type === selectedMenu.toLowerCase())
       : resto?.menus;
+
+  const cartTotal: number =
+    itemsInCart?.cart
+      .filter((c) => c.restaurant.id === Number(id))
+      .flatMap((c) => c.items)
+      .reduce((sum, item) => sum + item.itemTotal, 0) ?? 0;
+
+  const totalQty: number =
+    itemsInCart?.cart
+      .filter((c) => c.restaurant.id === Number(id))
+      .flatMap((c) => c.items)
+      .reduce((sum, qty) => sum + qty.quantity, 0) ?? 0;
 
   return (
     <>
@@ -50,7 +61,7 @@ export default function RestoDetail({ params }: PageParam) {
             onClick={() => clickImage(0)}
           >
             <Image
-              src={safeImageSrc(resto?.images[0].toString()) ?? noImage}
+              src={safeImageSrc(resto?.images[0]) ?? noImage}
               alt=''
               className='group object-cover'
               fill
@@ -62,7 +73,7 @@ export default function RestoDetail({ params }: PageParam) {
               onClick={() => clickImage(1)}
             >
               <Image
-                src={safeImageSrc(resto?.images[1].toString()) ?? noImage}
+                src={safeImageSrc(resto?.images[1]) ?? noImage}
                 alt=''
                 className='group object-cover'
                 fill
@@ -74,7 +85,7 @@ export default function RestoDetail({ params }: PageParam) {
                 onClick={() => clickImage(2)}
               >
                 <Image
-                  src={safeImageSrc(resto?.images[2].toString()) ?? noImage}
+                  src={safeImageSrc(resto?.images[2]) ?? noImage}
                   alt=''
                   className='group object-cover'
                   fill
@@ -85,7 +96,7 @@ export default function RestoDetail({ params }: PageParam) {
                 onClick={() => clickImage(3)}
               >
                 <Image
-                  src={safeImageSrc(resto?.images[3].toString()) ?? noImage}
+                  src={safeImageSrc(resto?.images[3]) ?? noImage}
                   alt=''
                   className='group object-cover'
                   fill
@@ -163,12 +174,36 @@ export default function RestoDetail({ params }: PageParam) {
         </div>
       </Wrapper>
       <Wrapper>
-        <div className='grid w-full justify-between gap-y-6 md:grid-cols-4 lg:grid-cols-5'>
-          {itemFilter?.map((item) => (
-            <ItemCard key={item.id} {...item} />
-          ))}
+        <div className='flex w-full flex-col gap-y-5'>
+          {totalQty !== 0 && (
+            <div className='flex w-full justify-between'>
+              <div className='flex-col gap-y-0.5'>
+                <div className='flex items-center gap-x-2'>
+                  <Icon
+                    icon='lets-icons:bag-fill'
+                    className='size-6 text-inherit'
+                  />
+                  <p className='font-regular text-md'>
+                    {totalQty} {`Item's`}
+                  </p>
+                </div>
+                <p className='text-xl font-extrabold'>
+                  {formatRupiah(cartTotal ?? 0)}
+                </p>
+              </div>
+              <Button variant='auth' size='lg' className='mr-0 flex md:w-57.5'>
+                Checkout
+              </Button>
+            </div>
+          )}
+          <div className='grid w-full justify-between gap-y-6 md:grid-cols-4 lg:grid-cols-5'>
+            {itemFilter?.map((item) => (
+              <ItemCard key={item.id} restoId={Number(id)} {...item} />
+            ))}
+          </div>
         </div>
       </Wrapper>
+      <PopupMessage />
     </>
   );
 }
