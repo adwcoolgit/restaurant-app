@@ -18,12 +18,12 @@ import { Restaurants } from '@/components/restaurants';
 export default function Home() {
   const [savedUser] = useLocalStorageState<User>(loginUserSKey(), initUser);
   const [user, setUser] = useState<User>(initUser);
-  ClearStorage();
+  // ClearStorage();
 
   useEffect(() => {
-    if (savedUser) {
-      setUser(savedUser);
-    }
+    // if (savedUser) {
+    setUser(savedUser);
+    // }
   }, [savedUser]);
 
   function onSignOut() {

@@ -56,6 +56,7 @@ export const removeItem = (key: string) => {
 };
 
 export const removeItems = () => {
+  if (typeof window === 'undefined') return;
   localStorage.clear();
   return null;
 };

@@ -11,11 +11,12 @@ import { removeItems, useLocalStorageState } from '@/lib/storages';
 import { isLoginSKey } from '@/features/auth/type';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Spinner } from '@/components/spinner';
-import { ClearStorage } from '@/functions/user-function';
 import { PopupMessage } from '@/components/popup-message';
+import { useCartSummary } from '@/hooks/useCartSummary';
+import { ClearStorage } from '@/functions/user-function';
 
 export default function Profile() {
+  const { data: cartSummaryData } = useCartSummary();
   const [isLogin, hydrated] = useLocalStorageState<boolean>(
     isLoginSKey(),
     true
@@ -35,6 +36,7 @@ export default function Profile() {
 
   const btnLogout = () => {
     removeItems();
+    router.push('/');
   };
 
   return (

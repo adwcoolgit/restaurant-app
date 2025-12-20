@@ -2,7 +2,6 @@ import { ComponentProps } from '@/types/component-type';
 import { Icon } from '@iconify/react';
 import { Activity, useEffect, useState } from 'react';
 import { CardContent } from './cart-content';
-import { useCartSummary } from '@/hooks/useCartSummary';
 import { useLocalStorageState } from '@/lib/storages';
 import { isLoginSKey } from '@/features/auth/type';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,15 +10,21 @@ import { RootState } from '@/states/store';
 import { formatRupiah } from '@/lib/utils';
 import { CartTotalAmount } from './cart-total-amount';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { CartSummary } from '@/app/(pages)/(app)/my-cart/type';
+import { cartSummaryQueryKey } from '@/features/cart/cart-summary.service';
 
 type Props = ComponentProps;
 
 export const CartCardWrapper: React.FC<Props> = ({ className }) => {
   const router = useRouter();
-  const { data: cartSummaryData } = useCartSummary();
   const login = useSelector((state: RootState) => state.auth.isLogin);
   const [show, setShow] = useState<boolean[]>([]);
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+  const cartSummaryData = queryClient.getQueryData<CartSummary>(
+    cartSummaryQueryKey()
+  );
   const [isLogin, setIsLogin, hydrated] = useLocalStorageState<boolean>(
     isLoginSKey(),
     false

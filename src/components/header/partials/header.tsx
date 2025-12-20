@@ -14,12 +14,14 @@ import { Spinner } from '@/components/ui/spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { IsLogin } from '@/states/slices/authSlice';
 import { RootState } from '@/states/store';
+import { useCartSummary } from '@/hooks/useCartSummary';
 
 interface Props extends ComponentProps {
   isDark: boolean;
 }
 
 export const Header: React.FC<Props> = ({ className, isDark }) => {
+  // const { data: itemsInCart } = useCartSummary();
   const login = useSelector((state: RootState) => state.auth.isLogin);
   const dispatch = useDispatch();
   const [isLogin, setIsLogin, hydrated] = useLocalStorageState<boolean>(
@@ -35,7 +37,7 @@ export const Header: React.FC<Props> = ({ className, isDark }) => {
 
   useEffect(() => {
     dispatch(IsLogin(Boolean(isLogin)));
-  }, [isLogin]);
+  }, [login, isLogin]);
 
   return (
     <header
@@ -46,7 +48,7 @@ export const Header: React.FC<Props> = ({ className, isDark }) => {
     >
       <Wrapper className='flex-between'>
         <Logo className='' />
-        {hydrated && (login ? <ProfileImage {...user} /> : <AuthButton />)}
+        {hydrated && (isLogin ? <ProfileImage {...user} /> : <AuthButton />)}
       </Wrapper>
     </header>
   );

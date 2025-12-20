@@ -21,7 +21,7 @@ import { useParams } from 'next/navigation';
 export default function RestoDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: resto } = useResto(id);
-  const { data: itemsInCart } = useCartSummary();
+  const { data: cartSummaryData } = useCartSummary();
   const [selected, setSelected] = useState<number | undefined>(undefined);
   const [selectedMenu, setSelectedMenu] = useState<string>('all menu');
   const dispatch = useDispatch();
@@ -37,13 +37,13 @@ export default function RestoDetail() {
       : resto?.menus;
 
   const cartTotal: number =
-    itemsInCart?.cart
+    cartSummaryData?.cart
       .filter((c) => c.restaurant.id === Number(id))
       .flatMap((c) => c.items)
       .reduce((sum, item) => sum + item.itemTotal, 0) ?? 0;
 
   const totalQty: number =
-    itemsInCart?.cart
+    cartSummaryData?.cart
       .filter((c) => c.restaurant.id === Number(id))
       .flatMap((c) => c.items)
       .reduce((sum, qty) => sum + qty.quantity, 0) ?? 0;

@@ -8,6 +8,7 @@ import { Icon } from '@iconify/react';
 import { useUpdateQty } from '@/features/cart/cart-update-qty.service';
 import { Item, UpdateQtyVariables } from '@/features/cart/type';
 import { is } from 'zod/v4/locales';
+import { useDeleteItem } from '@/features/cart/cart-delete-item.service copy';
 
 type Props = {
   cartItem: Item;
@@ -22,6 +23,7 @@ export const CartItemDetail: React.FC<Props> = ({ className, cartItem }) => {
     params: { quantity: qty },
   };
   const { mutate: updateQty, isPending } = useUpdateQty({});
+  const { mutate: deleteItem } = useDeleteItem({});
 
   useEffect(() => {
     if (isQtyChanged) {
@@ -29,6 +31,8 @@ export const CartItemDetail: React.FC<Props> = ({ className, cartItem }) => {
         if (qty > 0) {
           updateQty(params);
           setIsQtyChanged(false);
+        } else {
+          deleteItem(cartItem.id);
         }
       }, 100);
       return () => clearTimeout(delayDebounceFn);

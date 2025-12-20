@@ -6,6 +6,9 @@ import noImage from '@/../public/images/no-image-available.svg';
 import { Icon } from '@iconify/react';
 import { useCartSummary } from '@/hooks/useCartSummary';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { CartSummary } from '@/app/(pages)/(app)/my-cart/type';
+import { cartSummaryQueryKey } from '@/features/cart/cart-summary.service';
 
 type Props = User & ComponentProps;
 
@@ -15,11 +18,15 @@ export const ProfileImage: React.FC<Props> = ({
   avatar,
   ...props
 }) => {
-  const { data: itemsInCart } = useCartSummary();
+  // const { data: itemsInCart } = useCartSummary();
+  const queryClient = useQueryClient();
+  const cartSummaryData = queryClient.getQueryData<CartSummary>(
+    cartSummaryQueryKey()
+  );
   const router = useRouter();
 
   const totalQty =
-    itemsInCart?.cart
+    cartSummaryData?.cart
       .flatMap((c) => c.items)
       .reduce((sum, qty) => sum + qty.quantity, 0) ?? 0;
 
