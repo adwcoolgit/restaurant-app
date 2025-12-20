@@ -1,5 +1,3 @@
-import { string } from 'zod';
-
 interface FoodBaverage {
   title: string;
 }

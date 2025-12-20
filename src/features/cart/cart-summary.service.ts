@@ -1,14 +1,14 @@
 import { axiosInstance } from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
 import { queryOptions } from '@tanstack/react-query';
-import { CartSummary } from './type';
+import { CartSummaryByResto } from './type';
 import { ApiResponse } from '@/types/global-types';
 
-export async function cartSummaryService(): Promise<CartSummary> {
+export async function cartSummaryService(): Promise<CartSummaryByResto> {
   const { data } =
-    await axiosInstance.get<ApiResponse<CartSummary>>(`/api/cart`);
+    await axiosInstance.get<ApiResponse<CartSummaryByResto>>(`/api/cart`);
 
-  return data.data as CartSummary;
+  return data.data as CartSummaryByResto;
 }
 
 export const cartSummaryQueryOption = () => {
@@ -19,7 +19,7 @@ export const cartSummaryQueryOption = () => {
   });
 };
 
-export type UseUserProfileQueryParam = {
+export type UseCartSummaryQueryParam = {
   queryConfig?: QueryConfig<typeof cartSummaryQueryOption>;
 };
 

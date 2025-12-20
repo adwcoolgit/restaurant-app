@@ -3,33 +3,41 @@
 import { AuthLogin } from '@/components/login/layout';
 import { PopupMessage } from '@/components/popup-message';
 import { useRouter } from 'next/navigation';
-import { ClearStorage } from '@/functions/user-function';
-import { Spinner } from '@/components/spinner';
 import { useLocalStorageState } from '@/lib/storages';
 import { isLoginSKey } from '@/features/auth/type';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/states/store';
+import { IsLogin } from '@/states/slices/authSlice';
 
 export default function SignIn() {
-  const [isLogin] = useLocalStorageState<boolean>(isLoginSKey(), false);
-  const [mState, setMState] = useState(true);
+  const login = useSelector((state: RootState) => state.auth.isLogin);
+  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<boolean>(
+    isLoginSKey(),
+    false
+  );
   const router = useRouter();
-  ClearStorage();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isLogin) {
+    dispatch(IsLogin(Boolean(isLogin)));
+  }, [isLogin]);
+
+  useEffect(() => {
+    if (login) {
       router.push('/');
     }
-    setMState(isLogin);
-  }, []);
-
-  if (mState) {
-    return <Spinner />;
-  }
+  }, [login]);
 
   return (
     <>
-      <AuthLogin />
-      <PopupMessage />
+      {hydrated &&
+        (!login ? (
+          <>
+            <AuthLogin />
+            <PopupMessage />
+          </>
+        ) : null)}
     </>
   );
 }

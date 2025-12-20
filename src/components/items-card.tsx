@@ -4,19 +4,18 @@ import { ComponentProps } from '@/types/component-type';
 import Image from 'next/image';
 import noImage from '@/../public/images/no-image-available.svg';
 import { Button } from './ui/button';
-import { useMemo } from 'react';
 import { AddToCart } from '@/features/cart/type';
 import { useAddToCart } from '@/features/cart/add-to-cart.service';
 
-type Props = Item & ComponentProps;
+type Props = { cItem: Item } & ComponentProps;
 
 export const ItemCard: React.FC<Props & { restoId: number }> = ({
   className,
   restoId,
-  ...item
+  cItem,
 }) => {
   const params: AddToCart = {
-    menuId: item.id,
+    menuId: cItem.id,
     quantity: 1,
     restaurantId: Number(restoId),
   };
@@ -32,21 +31,21 @@ export const ItemCard: React.FC<Props & { restoId: number }> = ({
         'flex cursor-pointer flex-col justify-center overflow-hidden rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.05)] hover:shadow-[0_0_15px_rgba(0,0,0,0.15)] md:w-fit',
         className
       )}
-      id={item.id.toString()}
+      id={cItem.id.toString()}
     >
       <div className='relative md:size-71.25'>
         <Image
-          src={safeImageSrc(item.image) ?? noImage}
-          alt={item.foodName}
+          src={safeImageSrc(cItem.image) ?? noImage}
+          alt={cItem.foodName}
           fill
           className='object-contain'
         />
       </div>
       <div className='flex w-full justify-between p-4'>
         <div className='flex-col'>
-          <p className='text-md font-medium text-inherit'>{item.foodName}</p>
+          <p className='text-md font-medium text-inherit'>{cItem.foodName}</p>
           <p className='text-lg font-extrabold text-inherit'>
-            {formatRupiah(item.price)}
+            {formatRupiah(cItem.price)}
           </p>
         </div>
         <Button

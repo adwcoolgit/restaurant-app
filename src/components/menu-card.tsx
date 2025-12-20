@@ -2,7 +2,7 @@ import { ComponentProps } from '@/types/component-type';
 import Image from 'next/image';
 import noImage from '@/../public/images/no-image-available.svg';
 import { MenuItems } from '@/constant/menu-bar';
-import { cn, safeImageSrc } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 type Props = MenuItems & ComponentProps;
 

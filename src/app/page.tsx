@@ -16,15 +16,15 @@ import { menuBarItems } from '@/constant/menu-bar';
 import { Restaurants } from '@/components/restaurants';
 
 export default function Home() {
-  const [user_] = useLocalStorageState<User>(loginUserSKey(), initUser);
+  const [savedUser] = useLocalStorageState<User>(loginUserSKey(), initUser);
   const [user, setUser] = useState<User>(initUser);
   ClearStorage();
 
   useEffect(() => {
-    if (user_) {
-      setUser(user_);
+    if (savedUser) {
+      setUser(savedUser);
     }
-  }, [user_]);
+  }, [savedUser]);
 
   function onSignOut() {
     removeItems();
@@ -54,7 +54,7 @@ export default function Home() {
               Search and refine your choice to discover the perfect restaurant.
             </h3>
           </div>
-          <SearchBox className='mx-auto justify-center md:w-151' />
+          <SearchBox sizes='xl' className='mx-auto justify-center md:w-151' />
         </div>
       </Wrapper>
       <Wrapper className='w-full'>
@@ -65,7 +65,6 @@ export default function Home() {
         </div>
       </Wrapper>
       <Restaurants />
-      {/* <Button onClick={onSignOut}>SIGN OUT</Button> */}
       <PopupMessage />
     </div>
   );

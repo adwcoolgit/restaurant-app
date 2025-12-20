@@ -16,7 +16,7 @@ import { ClearStorage } from '@/functions/user-function';
 import { PopupMessage } from '@/components/popup-message';
 
 export default function Profile() {
-  const [isLogin, hidrated] = useLocalStorageState<boolean>(
+  const [isLogin, hydrated] = useLocalStorageState<boolean>(
     isLoginSKey(),
     true
   );
@@ -25,18 +25,13 @@ export default function Profile() {
   const router = useRouter();
   // ClearStorage();
 
-  // useEffect(() => {
-  //   if (!Boolean(isLogin)) {
-  //     router.push('/signin');
-  //   }
-  //   setMState(isLogin);
-  // }, [isLogin]);
+  useEffect(() => {
+    if (!Boolean(isLogin)) {
+      router.push('/signin');
+    }
+  }, [isLogin]);
 
-  // if (mState) {
-  //   return <Spinner />;
-  // }
-
-  if (!hidrated) return <></>;
+  if (!hydrated) return <></>;
 
   const btnLogout = () => {
     removeItems();

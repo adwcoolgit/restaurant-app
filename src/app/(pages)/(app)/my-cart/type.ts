@@ -1,19 +1,21 @@
+import { Item } from '@/features/cart/type';
+
 export interface CartSummary {
   cart: Cart[];
 }
 
-interface Cart {
+export type Cart = {
   restaurant: Restaurant;
   items: Item[];
   subtotal: number;
-}
+};
 
-interface Item {
-  id: number;
-  menu: Menu;
-  quantity: number;
-  itemTotal: number;
-}
+// export type Item = {
+//   id: number;
+//   menu: Menu;
+//   quantity: number;
+//   itemTotal: number;
+// }
 
 interface Menu {
   id: number;

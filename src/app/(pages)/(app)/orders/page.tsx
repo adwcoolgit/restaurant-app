@@ -14,7 +14,6 @@ import { SearchBox } from '@/components/search-box';
 import { OrderStatus } from '@/constant/order-status';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { CartCard } from '@/components/cart-card';
 import { useCartSummary } from '@/hooks/useCartSummary';
 
 export default function Orders() {

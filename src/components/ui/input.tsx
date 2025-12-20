@@ -16,7 +16,7 @@ const inputVariants = cva(
         sm: 'h-7',
         md: 'h-10',
         lg: 'h-11',
-        xl: 'h-12',
+        xl: 'h-14',
       },
     },
     defaultVariants: {

@@ -1,8 +1,5 @@
 import { ComponentProps } from '@/types/component-type';
 import { Button } from './ui/button';
-import { useState } from 'react';
-import { initUser } from '@/types/global-types';
-import { User } from '@/features/auth/type';
 import { useRouter } from 'next/navigation';
 
 export const AuthButton: React.FC<ComponentProps> = () => {

@@ -4,7 +4,6 @@ import { User } from '@/features/auth/type';
 import { cn, safeImageSrc } from '@/lib/utils';
 import noImage from '@/../public/images/no-image-available.svg';
 import { Icon } from '@iconify/react';
-import { AuthButton } from './auth-button';
 import { useCartSummary } from '@/hooks/useCartSummary';
 import { useRouter } from 'next/navigation';
 
@@ -19,12 +18,13 @@ export const ProfileImage: React.FC<Props> = ({
   const { data: itemsInCart } = useCartSummary();
   const router = useRouter();
 
-  const totalQty: number =
+  const totalQty =
     itemsInCart?.cart
       .flatMap((c) => c.items)
       .reduce((sum, qty) => sum + qty.quantity, 0) ?? 0;
 
   const btnProfile = () => router.push('/profile');
+  const btnCart = () => router.push('/my-cart');
 
   return (
     <>
@@ -33,7 +33,11 @@ export const ProfileImage: React.FC<Props> = ({
           className={cn('flex cursor-pointer items-center gap-x-6', className)}
         >
           <div className='relative'>
-            <Icon icon='lets-icons:bag-fill' className='size-8 text-inherit' />
+            <Icon
+              icon='lets-icons:bag-fill'
+              className='size-8 text-inherit'
+              onClick={btnCart}
+            />
             <div className='bg-primary-100 flex-center absolute top-0 size-5 translate-x-1/2 justify-self-end rounded-full'>
               <p className='text-xs text-white'>{totalQty}</p>
             </div>

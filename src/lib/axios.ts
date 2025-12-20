@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosHeaders } from 'axios';
 
 export const axiosInstance = axios.create({

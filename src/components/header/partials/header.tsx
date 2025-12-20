@@ -9,33 +9,33 @@ import { cn } from '@/lib/utils';
 import { ProfileImage } from '@/components/profile-image';
 import { initUser } from '@/types/global-types';
 import { AuthButton } from '@/components/auth-button';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
+import { useDispatch, useSelector } from 'react-redux';
+import { IsLogin } from '@/states/slices/authSlice';
+import { RootState } from '@/states/store';
 
 interface Props extends ComponentProps {
   isDark: boolean;
 }
 
 export const Header: React.FC<Props> = ({ className, isDark }) => {
-  const [isLogin, hidrated] = useLocalStorageState<boolean>(
+  const login = useSelector((state: RootState) => state.auth.isLogin);
+  const dispatch = useDispatch();
+  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<boolean>(
     isLoginSKey(),
     false
   );
-  const [user_] = useLocalStorageState<User>(loginUserSKey(), initUser);
+  const [savedUser] = useLocalStorageState<User>(loginUserSKey(), initUser);
   const [user, setUser] = useState<User>(initUser);
-  const [mState, setMState] = useState(true);
 
   useEffect(() => {
-    setUser(user_);
-  }, [user_]);
+    setUser(savedUser);
+  }, [savedUser]);
 
-  if (!hidrated) {
-    return (
-      <>
-        <Spinner />
-      </>
-    );
-  }
+  useEffect(() => {
+    dispatch(IsLogin(Boolean(isLogin)));
+  }, [isLogin]);
 
   return (
     <header
@@ -46,7 +46,7 @@ export const Header: React.FC<Props> = ({ className, isDark }) => {
     >
       <Wrapper className='flex-between'>
         <Logo className='' />
-        {isLogin ? <ProfileImage {...user} /> : <AuthButton />}
+        {hydrated && (login ? <ProfileImage {...user} /> : <AuthButton />)}
       </Wrapper>
     </header>
   );

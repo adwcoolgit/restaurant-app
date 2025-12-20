@@ -1,15 +1,12 @@
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '@/states/store';
-import { Button } from './ui/button';
 import { FieldValues } from 'react-hook-form';
 import { setDialog, setToast } from '@/states/slices/uiSlice';
 import { Logo } from './logo';
 import { GenericFormProps } from '@/types/component-type';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 import { RegisterForm } from './register/partial';
 
 export const AuthContainer = <T extends FieldValues>({
@@ -18,8 +15,6 @@ export const AuthContainer = <T extends FieldValues>({
   children,
 }: GenericFormProps<T>) => {
   const dialog = useSelector((state: RootState) => state.ui.authDialog);
-  const toastMessage = useSelector((state: RootState) => state.ui.toastMessage);
-  const dispatch = useDispatch();
   const router = useRouter();
 
   const closeDialog_Click = () => {
@@ -32,16 +27,6 @@ export const AuthContainer = <T extends FieldValues>({
     if (isLogin) router.push('/signup');
     else router.push('/signin');
   };
-
-  // useEffect(() => {
-  //   if (toastMessage) {
-  //     setTimeout(() => {
-  //       dispatch(setToast(toastMessage));
-  //     }, 10000);
-  //   }
-  // }, [toastMessage]);
-
-  // toastMessage ? toast(toastMessage) : <></>;
 
   return (
     <>

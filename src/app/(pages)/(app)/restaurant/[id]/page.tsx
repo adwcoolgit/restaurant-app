@@ -4,7 +4,7 @@ import { Header } from '@/components/header/partials/header';
 import { Wrapper } from '@/components/wrapper';
 import { useResto } from '@/hooks/useResto';
 import Image from 'next/image';
-import { use, useEffect, useState } from 'react';
+import { useState } from 'react';
 import noImage from '@/../public/images/no-image-available.svg';
 import { formatRupiah, safeImageSrc } from '@/lib/utils';
 import { ImageFull } from '@/components/full-image';
@@ -198,7 +198,7 @@ export default function RestoDetail() {
           )}
           <div className='grid w-full justify-between gap-y-6 md:grid-cols-4 lg:grid-cols-5'>
             {itemFilter?.map((item) => (
-              <ItemCard key={item.id} restoId={Number(id)} {...item} />
+              <ItemCard key={item.id} restoId={Number(id)} cItem={item} />
             ))}
           </div>
         </div>

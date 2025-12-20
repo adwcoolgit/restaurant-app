@@ -61,7 +61,10 @@ export const AuthLogin: React.FC<AuthLoginProps> = ({ className }) => {
         >
           <AuthContainer isLogin={true} className=''>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit(onSubmit);
+              }}
               className='flex w-full flex-col gap-y-5'
             >
               <InputGroup

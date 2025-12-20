@@ -42,4 +42,4 @@ interface Coordinates {
   long: number;
 }
 
-export type Items = Item[];
+export type Items = { items: Item[] };
