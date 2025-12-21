@@ -1,7 +1,9 @@
 'use client';
 
 import { isRememberMeSKey } from '@/features/auth/type';
+import { IsLogin } from '@/states/slices/authSlice';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 interface storageProps<T> {
   key: string;
@@ -32,9 +34,10 @@ export const getItemWithExpiry = (key: string) => {
   try {
     const item = JSON.parse(itemString);
     const currentDate = new Date();
+    const itemExpiry: Date = new Date(item.expiry);
 
-    if (currentDate.getTime() > item.expiry) {
-      localStorage.removeItem(key);
+    if (currentDate > itemExpiry) {
+      removeItems();
       return null;
     }
 
@@ -58,12 +61,14 @@ export const removeItem = (key: string) => {
 export const removeItems = () => {
   if (typeof window === 'undefined') return;
   localStorage.clear();
+
   return null;
 };
 
 export function useLocalStorageState<T>(key: string, initial: T) {
   const [state, setState] = useState<T>(initial);
   const [hydrated, setHydrated] = useState(false);
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     try {
@@ -79,6 +84,10 @@ export function useLocalStorageState<T>(key: string, initial: T) {
         // } else {
         const data: T = JSON.parse(raw);
         setState(data);
+      } else {
+        setHydrated(true);
+        dispatch(IsLogin(false));
+        return;
       }
     } catch {
       console.info('[useLocalStorageState] hydrate error');
@@ -89,6 +98,7 @@ export function useLocalStorageState<T>(key: string, initial: T) {
 
   React.useEffect(() => {
     if (!hydrated || typeof window === 'undefined') return;
+    if (localStorage.length === 0) return;
 
     try {
       const isRememberMe: boolean = Boolean(
@@ -104,6 +114,7 @@ export function useLocalStorageState<T>(key: string, initial: T) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (localStorage.length === 0) return;
 
     const handler = (e: StorageEvent) => {
       if (e.key !== e.newValue || e.newValue === null) return;

@@ -2,13 +2,8 @@ import { cn, formatRupiah, safeImageSrc } from '@/lib/utils';
 import { ComponentProps } from '@/types/component-type';
 import noImage from '@/../public/images/no-image-available.svg';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { Button } from '../ui/button';
-import { Icon } from '@iconify/react';
-import { useUpdateQty } from '@/features/cart/cart-update-qty.service';
-import { Item, UpdateQtyVariables } from '@/features/cart/type';
-import { is } from 'zod/v4/locales';
-import { useDeleteItem } from '@/features/cart/cart-delete-item.service copy';
+import { Item } from '@/features/cart/type';
+import { AddItemButton } from '../add-button';
 
 type Props = {
   cartItem: Item;
@@ -16,29 +11,6 @@ type Props = {
 } & ComponentProps;
 
 export const CartItemDetail: React.FC<Props> = ({ className, cartItem }) => {
-  const [qty, setQty] = useState<number>(0);
-  const [isQtyChanged, setIsQtyChanged] = useState<boolean>(false);
-  const params: UpdateQtyVariables = {
-    id: cartItem.id,
-    params: { quantity: qty },
-  };
-  const { mutate: updateQty, isPending } = useUpdateQty({});
-  const { mutate: deleteItem } = useDeleteItem({});
-
-  useEffect(() => {
-    if (isQtyChanged) {
-      const delayDebounceFn = setTimeout(() => {
-        if (qty > 0) {
-          updateQty(params);
-          setIsQtyChanged(false);
-        } else {
-          deleteItem(cartItem.id);
-        }
-      }, 100);
-      return () => clearTimeout(delayDebounceFn);
-    }
-  }, [isQtyChanged]);
-
   return (
     <>
       <div className={cn('flex items-center', className)}>
@@ -58,40 +30,7 @@ export const CartItemDetail: React.FC<Props> = ({ className, cartItem }) => {
           </p>
         </div>
       </div>
-      <div className='flex items-center gap-x-4'>
-        <Button
-          variant='outline'
-          className='size-10 rounded-full border'
-          disabled={isPending}
-          onClick={() => {
-            if (cartItem.quantity > 0) {
-              setQty(cartItem.quantity - 1);
-              setIsQtyChanged(true);
-            }
-          }}
-        >
-          <Icon
-            icon='ic:round-remove'
-            width='24'
-            height='24'
-            className='text-black'
-          />
-        </Button>
-        <p className='flex-center w-5 text-lg font-semibold'>
-          {cartItem.quantity}
-        </p>
-        <Button
-          variant='auth'
-          className='size-10 rounded-full border'
-          disabled={isPending}
-          onClick={() => {
-            setQty(cartItem.quantity + 1);
-            setIsQtyChanged(true);
-          }}
-        >
-          <Icon icon='ic:round-add' width='24' height='24' />
-        </Button>
-      </div>
+      <AddItemButton itemId={cartItem.id} itemQty={cartItem.quantity} />
     </>
   );
 };

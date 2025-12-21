@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosHeaders } from 'axios';
+import { isRememberMeSKey, loginTokenSKey } from '@/features/auth/type';
+import axios, { AxiosHeaders, AxiosRequestConfig } from 'axios';
+import { getItemWithExpiry } from './storages';
 
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE,
@@ -10,7 +12,21 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use((config) => {
   if (typeof window !== undefined) {
-    const token = localStorage.getItem('token');
+    let token: string | null;
+    token = '';
+
+    const isRememberMe: boolean = Boolean(
+      Number(localStorage.getItem(isRememberMeSKey()))
+    );
+
+    if (!isRememberMe) {
+      const storedToken = getItemWithExpiry(loginTokenSKey());
+      if (storedToken) {
+        token = storedToken?.replaceAll('"', '');
+      }
+    } else {
+      token = localStorage.getItem(loginTokenSKey());
+    }
 
     if (token) {
       if (
@@ -32,3 +48,43 @@ axiosInstance.interceptors.request.use((config) => {
 
   return config;
 });
+
+// Helper: kembalikan langsung data bertipe T (bukan AxiosResponse<T>)
+export const http = {
+  get: async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
+    const res = await axiosInstance.get<T>(url, config);
+    return res.data;
+  },
+
+  post: async <T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<T> => {
+    const res = await axiosInstance.post<T>(url, data, config);
+    return res.data;
+  },
+
+  patch: async <T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<T> => {
+    const res = await axiosInstance.patch<T>(url, data, config);
+    return res.data;
+  },
+
+  put: async <T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<T> => {
+    const res = await axiosInstance.put<T>(url, data, config);
+    return res.data;
+  },
+
+  delete: async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
+    const res = await axiosInstance.delete<T>(url, config);
+    return res.data;
+  },
+};

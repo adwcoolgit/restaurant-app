@@ -25,10 +25,9 @@ export const CartCardWrapper: React.FC<Props> = ({ className }) => {
   const cartSummaryData = queryClient.getQueryData<CartSummary>(
     cartSummaryQueryKey()
   );
-  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<boolean>(
-    isLoginSKey(),
-    false
-  );
+  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<
+    boolean | undefined
+  >(isLoginSKey(), undefined);
 
   useEffect(() => {
     dispatch(IsLogin(Boolean(isLogin)));
@@ -51,7 +50,13 @@ export const CartCardWrapper: React.FC<Props> = ({ className }) => {
                       <div key={d.id}>
                         <div className='flex w-full flex-col gap-y-4 rounded-xl border border-gray-200 p-6 pb-6 shadow-[0_0_15px_rgba(0,0,0,0.1)]'>
                           <div className='flex items-center gap-x-2'>
-                            <div className='flex w-1/4 items-center'>
+                            <div className='flex w-1/3 items-center gap-x-3'>
+                              <Icon
+                                icon='clarity:store-solid'
+                                width='25'
+                                height='25'
+                                className='text-primary-100'
+                              />
                               <p
                                 className='cursor-pointer text-center text-lg font-bold'
                                 onClick={() =>

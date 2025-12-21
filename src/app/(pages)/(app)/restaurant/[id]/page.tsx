@@ -162,7 +162,7 @@ export default function RestoDetail() {
                 key={index}
                 variant='outline'
                 size='md'
-                className={`text-primary-100 text-md border-primary-100/50 ${selectedMenu === menu.title ? 'bg-primary-100/10' : 'bg-white'} hover:text-primary-100 px-4 py-2`}
+                className={`text-primary-100 text-md border-primary-100/50 ${selectedMenu.toLocaleLowerCase() === menu.title.toLocaleLowerCase() ? 'bg-primary-100/10' : 'bg-white'} hover:text-primary-100 px-4 py-2`}
                 onClick={() => setSelectedMenu(menu.title)}
               >
                 {menu.title}

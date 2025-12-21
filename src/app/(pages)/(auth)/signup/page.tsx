@@ -12,10 +12,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 export default function SignUp() {
   const login = useSelector((state: RootState) => state.auth.isLogin);
-  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<boolean>(
-    isLoginSKey(),
-    false
-  );
+  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<
+    boolean | undefined
+  >(isLoginSKey(), undefined);
   const router = useRouter();
   const dispatch = useDispatch();
 

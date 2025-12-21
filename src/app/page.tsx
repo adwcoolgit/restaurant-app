@@ -14,22 +14,18 @@ import { MenuCard } from '@/components/menu-card';
 import { Wrapper } from '@/components/wrapper';
 import { menuBarItems } from '@/constant/menu-bar';
 import { Restaurants } from '@/components/restaurants';
+import { useCartSummary } from '@/hooks/useCartSummary';
 
 export default function Home() {
+  const { data: cartSummaryData } = useCartSummary(); // just to keep the cart summary updated
   const [savedUser] = useLocalStorageState<User>(loginUserSKey(), initUser);
   const [user, setUser] = useState<User>(initUser);
-  // ClearStorage();
+
+  // removeItems();
 
   useEffect(() => {
-    // if (savedUser) {
     setUser(savedUser);
-    // }
   }, [savedUser]);
-
-  function onSignOut() {
-    removeItems();
-    setUser(initUser);
-  }
 
   return (
     <div className='flex flex-col gap-y-12'>

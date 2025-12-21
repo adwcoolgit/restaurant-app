@@ -36,11 +36,11 @@ interface Restaurant {
   logo: string;
 }
 
-// export type AddToCart = {
-//   restaurantId: number;
-//   menuId: number;
-//   quantity: number;
-// };
+export type AddToCart = {
+  restaurantId: number;
+  menuId: number;
+  quantity: number;
+};
 
 // export type CartItemList = {
 //   cartItem: CartItem;

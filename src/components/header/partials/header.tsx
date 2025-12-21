@@ -24,10 +24,9 @@ export const Header: React.FC<Props> = ({ className, isDark }) => {
   // const { data: itemsInCart } = useCartSummary();
   const login = useSelector((state: RootState) => state.auth.isLogin);
   const dispatch = useDispatch();
-  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<boolean>(
-    isLoginSKey(),
-    false
-  );
+  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<
+    boolean | undefined
+  >(isLoginSKey(), undefined);
   const [savedUser] = useLocalStorageState<User>(loginUserSKey(), initUser);
   const [user, setUser] = useState<User>(initUser);
 

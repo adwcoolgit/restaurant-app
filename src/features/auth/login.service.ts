@@ -14,12 +14,7 @@ import {
   loginTokenSKey,
   loginUserSKey,
 } from './type';
-import {
-  removeItems,
-  setItem,
-  setItemWitExpiry,
-  useLocalStorageState,
-} from '@/lib/storages';
+import { removeItems, setItem, setItemWitExpiry } from '@/lib/storages';
 import { ApiResponse } from '@/types/global-types';
 
 export async function loginService(

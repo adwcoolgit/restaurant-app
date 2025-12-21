@@ -19,10 +19,9 @@ import { useCartSummary } from '@/hooks/useCartSummary';
 export default function Orders() {
   const [selectedMenu, setSelectedMenu] = useState<string>('all menu');
   const { data: itemsInCart } = useCartSummary();
-  const [isLogin, hidrated] = useLocalStorageState<boolean>(
-    isLoginSKey(),
-    true
-  );
+  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<
+    boolean | undefined
+  >(isLoginSKey(), undefined);
   const { data: profile } = useProfile();
 
   const itemFilter = itemsInCart?.cart.flatMap((c) => c.restaurant) ?? [];
