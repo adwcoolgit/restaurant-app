@@ -1,7 +1,14 @@
 'use client';
 
-import { isRememberMeSKey } from '@/features/auth/type';
+import { userQueryKey } from '@/features/auth/login.service';
+import {
+  isRememberMeSKey,
+  loginTokenSKey,
+  loginUserSKey,
+} from '@/features/auth/type';
+import { cartSummaryQueryKey } from '@/features/cart/cart-summary.service';
 import { IsLogin } from '@/states/slices/authSlice';
+import { useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -15,7 +22,7 @@ interface itemWithExpiry<T> {
   expiry: number;
 }
 
-export const setItemWitExpiry = <T>(params: storageProps<T>) => {
+export const setItemWithExpiry = <T>(params: storageProps<T>) => {
   const currentDate = new Date();
   const ttl = 1000 * 60 * 5;
 
@@ -28,16 +35,20 @@ export const setItemWitExpiry = <T>(params: storageProps<T>) => {
 };
 
 export const getItemWithExpiry = (key: string) => {
+  if (typeof window === 'undefined') return null;
   const itemString = localStorage.getItem(key);
   if (!itemString) return null;
 
   try {
-    const item = JSON.parse(itemString);
-    const currentDate = new Date();
-    const itemExpiry: Date = new Date(item.expiry);
+    const item = JSON.parse(itemString) as itemWithExpiry<unknown> | null;
+    if (!item || typeof item.expiry !== 'number') {
+      localStorage.removeItem(key);
+      return null;
+    }
 
-    if (currentDate > itemExpiry) {
-      removeItems();
+    const current = Date.now();
+    if (current > item.expiry) {
+      localStorage.removeItem(key);
       return null;
     }
 
@@ -60,10 +71,23 @@ export const removeItem = (key: string) => {
 
 export const removeItems = () => {
   if (typeof window === 'undefined') return;
-  localStorage.clear();
+  removeItem(loginTokenSKey());
+  removeItem(loginUserSKey());
 
   return null;
 };
+
+export function useRemoveQuery() {
+  const queryClient = useQueryClient();
+
+  const removeQuery = () => {
+    queryClient.removeQueries({ queryKey: cartSummaryQueryKey() });
+    queryClient.removeQueries({ queryKey: userQueryKey() });
+    removeItems();
+  };
+
+  return [removeQuery];
+}
 
 export function useLocalStorageState<T>(key: string, initial: T) {
   const [state, setState] = useState<T>(initial);
@@ -72,9 +96,8 @@ export function useLocalStorageState<T>(key: string, initial: T) {
 
   React.useEffect(() => {
     try {
-      const isRememberMe: boolean = Boolean(
-        Number(localStorage.getItem(isRememberMeSKey()))
-      );
+      const isRememberMe: boolean =
+        localStorage.getItem(isRememberMeSKey()) === '1';
       const raw = isRememberMe
         ? localStorage.getItem(key)
         : getItemWithExpiry(key);
@@ -98,32 +121,32 @@ export function useLocalStorageState<T>(key: string, initial: T) {
 
   React.useEffect(() => {
     if (!hydrated || typeof window === 'undefined') return;
-    if (localStorage.length === 0) return;
 
     try {
-      const isRememberMe: boolean = Boolean(
-        Number(localStorage.getItem(isRememberMeSKey()))
-      );
+      const isRememberMe: boolean =
+        localStorage.getItem(isRememberMeSKey()) === '1';
       if (isRememberMe) {
         localStorage.setItem(key, JSON.stringify(state));
       } else {
-        setItemWitExpiry({ key, value: state });
+        setItemWithExpiry({ key, value: state });
       }
     } catch {}
   }, [key, state, hydrated]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (localStorage.length === 0) return;
 
     const handler = (e: StorageEvent) => {
-      if (e.key !== e.newValue || e.newValue === null) return;
+      if (e.key !== key || e.newValue === null) return;
 
       try {
         setState(JSON.parse(e.newValue));
       } catch {}
     };
-  });
+
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, [key]);
 
   return [state, setState, hydrated] as const;
 }
