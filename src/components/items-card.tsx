@@ -6,9 +6,7 @@ import noImage from '@/../public/images/no-image-available.svg';
 import { Button } from './ui/button';
 import { AddToCart } from '@/features/cart/type';
 import { useAddToCart } from '@/features/cart/add-to-cart.service';
-import { useQueryClient } from '@tanstack/react-query';
-import { CartSummary } from '@/app/(pages)/(app)/my-cart/type';
-import { cartSummaryQueryKey } from '@/features/cart/cart-summary.service';
+import { useCartSummary } from '@/hooks/useCartSummary';
 import { AddItemButton } from './add-button';
 
 type Props = { cItem: Item; restoId: number } & ComponentProps;
@@ -20,10 +18,7 @@ export const ItemCard: React.FC<Props> = ({ className, restoId, cItem }) => {
     restaurantId: Number(restoId),
   };
   const { mutate: addToCart, isPending } = useAddToCart();
-  const queryClient = useQueryClient();
-  const cartSummaryData = queryClient.getQueryData<CartSummary>(
-    cartSummaryQueryKey()
-  );
+  const { data: cartSummaryData } = useCartSummary();
 
   const itemCardId: number =
     cartSummaryData?.cart

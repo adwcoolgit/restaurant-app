@@ -14,7 +14,12 @@ import {
   loginTokenSKey,
   loginUserSKey,
 } from './type';
-import { removeItems, setItem, setItemWitExpiry } from '@/lib/storages';
+import {
+  removeItems,
+  setItem,
+  setItemWithExpiry,
+  useRemoveQuery,
+} from '@/lib/storages';
 import { ApiResponse } from '@/types/global-types';
 
 export async function loginService(
@@ -41,25 +46,27 @@ export const useLogin = (params: UseLoginParams = {}) => {
     (state: RootState) => state.auth.blnRememberMe
   );
   const queryClient = useQueryClient();
+  const [removeQuery] = useRemoveQuery();
   const dispatch = useDispatch();
 
   return useMutation({
     mutationFn: loginService,
     ...params.mutationConfig,
     onSuccess: (data, variable, onMutateResult, context) => {
-      removeItems();
+      // removeItems();
+      removeQuery();
       if (!data) return;
 
       axiosInstance.defaults.headers.Authorization = `Bearer ${data.token}`;
 
       setItem(isRememberMeSKey(), String(Number(isRememberMe)));
       if (!isRememberMe) {
-        setItemWitExpiry({
+        setItemWithExpiry({
           key: loginUserSKey(),
           value: data.user,
         });
-        setItemWitExpiry({ key: loginTokenSKey(), value: data.token });
-        setItemWitExpiry({ key: isLoginSKey(), value: true });
+        setItemWithExpiry({ key: loginTokenSKey(), value: data.token });
+        setItemWithExpiry({ key: isLoginSKey(), value: true });
       } else {
         setItem(loginUserSKey(), JSON.stringify(data.user));
         setItem(loginTokenSKey(), data.token);
@@ -67,7 +74,7 @@ export const useLogin = (params: UseLoginParams = {}) => {
       }
 
       dispatch(IsLogin(true));
-      queryClient.invalidateQueries({ queryKey: ['me'] });
+      queryClient.invalidateQueries({ queryKey: userQueryKey() });
 
       return {
         data,
@@ -90,3 +97,5 @@ export const useLogin = (params: UseLoginParams = {}) => {
     retry: false,
   });
 };
+
+export const userQueryKey = () => ['me'];

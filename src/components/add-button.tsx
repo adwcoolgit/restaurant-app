@@ -4,8 +4,8 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import { useUpdateQty } from '@/features/cart/cart-update-qty.service';
 import { useDeleteItem } from '@/features/cart/cart-delete-item.service copy';
-import { Item, UpdateQtyVariables } from '@/features/cart/type';
-import { useLocalStorageState } from '@/lib/storages';
+import { UpdateQtyVariables } from '@/features/cart/type';
+import { appAddItem, useLocalStorageState } from '@/lib/storages';
 import { isLoginSKey } from '@/features/auth/type';
 
 type Props = {
@@ -34,6 +34,7 @@ export const AddItemButton: React.FC<Props> = ({
   useEffect(() => {
     if (isQtyChanged && isLogin) {
       const delayDebounceFn = setTimeout(() => {
+        localStorage.setItem(appAddItem(), 'true');
         if (qty > 0) {
           updateQty(params);
           setIsQtyChanged(false);
@@ -41,6 +42,7 @@ export const AddItemButton: React.FC<Props> = ({
           deleteItem(itemId);
         }
       }, 100);
+      localStorage.removeItem(appAddItem());
       return () => clearTimeout(delayDebounceFn);
     }
   }, [isQtyChanged]);

@@ -7,7 +7,11 @@ import noImage from '@/../public/images/no-image-available.svg';
 import Image from 'next/image';
 import { Header } from '@/components/header/partials/header';
 import { Icon } from '@iconify/react';
-import { removeItems, useLocalStorageState } from '@/lib/storages';
+import {
+  removeItems,
+  useLocalStorageState,
+  useRemoveQuery,
+} from '@/lib/storages';
 import { isLoginSKey } from '@/features/auth/type';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -16,9 +20,11 @@ import { useCartSummary } from '@/hooks/useCartSummary';
 
 export default function Profile() {
   const { data: cartSummaryData } = useCartSummary(); // just to keep the cart summary updated
-  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<
-    boolean | undefined
-  >(isLoginSKey(), undefined);
+  const [removeQuery] = useRemoveQuery();
+  const [isLogin, , hydrated] = useLocalStorageState<boolean | undefined>(
+    isLoginSKey(),
+    undefined
+  );
   const { data: profile } = useProfile();
   const router = useRouter();
 
@@ -29,7 +35,8 @@ export default function Profile() {
   }, [isLogin]);
 
   const btnLogout = () => {
-    removeItems();
+    // removeItems();
+    removeQuery();
     router.push('/');
   };
 

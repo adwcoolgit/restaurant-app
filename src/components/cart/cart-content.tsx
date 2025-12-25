@@ -6,15 +6,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import { CartSummary } from '@/app/(pages)/(app)/my-cart/type';
 import { cartSummaryQueryKey } from '@/features/cart/cart-summary.service';
 import { useEffect, useState } from 'react';
+import { useCartSummary } from '@/hooks/useCartSummary';
 import { CartTotalAmount } from './cart-total-amount';
 
 type Props = { index: number } & ComponentProps;
 
 export const CardContent: React.FC<Props> = ({ className, index }) => {
-  const queryClient = useQueryClient();
-  const cartSummaryData = queryClient.getQueryData<CartSummary>(
-    cartSummaryQueryKey()
-  );
+  const { data: cartSummaryData } = useCartSummary();
   const [itemsInCart, setItemsInCart] = useState<Cart>();
   const cartByResto = cartSummaryData?.cart[index];
 

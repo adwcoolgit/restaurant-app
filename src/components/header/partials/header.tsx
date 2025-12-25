@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocalStorageState } from '@/lib/storages';
+import { useLocalStorageState, useRemoveQuery } from '@/lib/storages';
 import { isLoginSKey, loginUserSKey, User } from '@/features/auth/type';
 import { Wrapper } from '@/components/wrapper';
 import { Logo } from '@/components/logo';
@@ -9,8 +9,7 @@ import { cn } from '@/lib/utils';
 import { ProfileImage } from '@/components/profile-image';
 import { initUser } from '@/types/global-types';
 import { AuthButton } from '@/components/auth-button';
-import { use, useEffect, useState } from 'react';
-import { Spinner } from '@/components/ui/spinner';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IsLogin } from '@/states/slices/authSlice';
 import { RootState } from '@/states/store';
@@ -29,6 +28,12 @@ export const Header: React.FC<Props> = ({ className, isDark }) => {
   >(isLoginSKey(), undefined);
   const [savedUser] = useLocalStorageState<User>(loginUserSKey(), initUser);
   const [user, setUser] = useState<User>(initUser);
+  const [removeQuery] = useRemoveQuery();
+
+  if (typeof window !== 'undefined') {
+    // localStorage.clear();
+    // removeQuery();
+  }
 
   useEffect(() => {
     setUser(savedUser);

@@ -7,6 +7,7 @@ import { isRememberMeSKey } from '@/features/auth/type';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '@/states/slices/authSlice';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function TestComp({ k, initial }: { k: string; initial: any }) {
   const [state, setState, hydrated] = useLocalStorageState(k, initial);
@@ -25,7 +26,14 @@ describe('useLocalStorageState', () => {
 
   function renderWithProvider(ui: React.ReactElement) {
     const store = configureStore({ reducer: { auth: authReducer } });
-    return render(<Provider store={store}>{ui}</Provider>);
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    return render(
+      <Provider store={store}>
+        <QueryClientProvider client={qc}>{ui}</QueryClientProvider>
+      </Provider>
+    );
   }
 
   it('hydrates from remember-me storage', async () => {

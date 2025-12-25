@@ -4,7 +4,11 @@ import { Header } from '@/components/header/partials/header';
 import { Wrapper } from '@/components/wrapper';
 import { isLoginSKey } from '@/features/auth/type';
 import { useProfile } from '@/hooks/useProfile';
-import { removeItems, useLocalStorageState } from '@/lib/storages';
+import {
+  removeItems,
+  useLocalStorageState,
+  useRemoveQuery,
+} from '@/lib/storages';
 import { safeImageSrc } from '@/lib/utils';
 import { Icon } from '@iconify/react';
 import Image from 'next/image';
@@ -18,15 +22,18 @@ import { useCartSummary } from '@/hooks/useCartSummary';
 
 export default function Orders() {
   const [selectedMenu, setSelectedMenu] = useState<string>('all menu');
+  const [removeQuery] = useRemoveQuery();
   const { data: itemsInCart } = useCartSummary();
-  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<
-    boolean | undefined
-  >(isLoginSKey(), undefined);
+  const [isLogin, , hydrated] = useLocalStorageState<boolean | undefined>(
+    isLoginSKey(),
+    undefined
+  );
   const { data: profile } = useProfile();
 
   const itemFilter = itemsInCart?.cart.flatMap((c) => c.restaurant) ?? [];
   const btnLogout = () => {
-    removeItems();
+    // removeItems();
+    removeQuery();
   };
 
   return (

@@ -11,9 +11,10 @@ import { Icon } from '@iconify/react';
 
 export default function MyCart() {
   const { data: cartSummaryData } = useCartSummary(); // just to keep the cart summary updated
-  const [isLogin, setIsLogin, hydrated] = useLocalStorageState<
-    boolean | undefined
-  >(isLoginSKey(), undefined);
+  const [isLogin, , hydrated] = useLocalStorageState<boolean | undefined>(
+    isLoginSKey(),
+    undefined
+  );
 
   return (
     <>

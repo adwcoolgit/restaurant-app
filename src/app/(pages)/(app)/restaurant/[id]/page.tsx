@@ -4,7 +4,7 @@ import { Header } from '@/components/header/partials/header';
 import { Wrapper } from '@/components/wrapper';
 import { useResto } from '@/hooks/useResto';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import noImage from '@/../public/images/no-image-available.svg';
 import { formatRupiah, safeImageSrc } from '@/lib/utils';
 import { ImageFull } from '@/components/full-image';
@@ -17,13 +17,21 @@ import { ItemCard } from '@/components/items-card';
 import { PopupMessage } from '@/components/popup-message';
 import { useCartSummary } from '@/hooks/useCartSummary';
 import { useParams } from 'next/navigation';
+import { useLocalStorageState, useRemoveQuery } from '@/lib/storages';
+import { isLoginSKey } from '@/features/auth/type';
 
 export default function RestoDetail() {
   const { id } = useParams<{ id: string }>();
+  const restoId = Number(id);
   const { data: resto } = useResto(id);
   const { data: cartSummaryData } = useCartSummary();
   const [selected, setSelected] = useState<number | undefined>(undefined);
   const [selectedMenu, setSelectedMenu] = useState<string>('all menu');
+  const [isLogin, , hydrated] = useLocalStorageState<boolean | undefined>(
+    isLoginSKey(),
+    undefined
+  );
+  const [removeQuery] = useRemoveQuery();
   const dispatch = useDispatch();
 
   function clickImage(index: number) {
@@ -31,22 +39,30 @@ export default function RestoDetail() {
     dispatch(fullImage(true));
   }
 
+  useEffect(() => {
+    if (!Boolean(isLogin) && hydrated) {
+      removeQuery();
+    }
+  }, [isLogin, hydrated, removeQuery]);
+
   const itemFilter =
     selectedMenu.toLowerCase() !== 'all menu'
-      ? resto?.menus.filter((a) => a.type === selectedMenu.toLowerCase())
-      : resto?.menus;
+      ? resto?.menus?.filter((a) => a.type === selectedMenu.toLowerCase())
+      : (resto?.menus ?? []);
 
-  const cartTotal: number =
+  const filteredItems =
     cartSummaryData?.cart
-      .filter((c) => c.restaurant.id === Number(id))
-      .flatMap((c) => c.items)
-      .reduce((sum, item) => sum + item.itemTotal, 0) ?? 0;
+      ?.filter((c) => c.restaurant.id === restoId)
+      .flatMap((c) => c.items) ?? [];
 
-  const totalQty: number =
-    cartSummaryData?.cart
-      .filter((c) => c.restaurant.id === Number(id))
-      .flatMap((c) => c.items)
-      .reduce((sum, qty) => sum + qty.quantity, 0) ?? 0;
+  const cartTotal: number = filteredItems.reduce(
+    (sum, item) => sum + item.itemTotal,
+    0
+  );
+  const totalQty: number = filteredItems.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
 
   return (
     <>
@@ -109,7 +125,10 @@ export default function RestoDetail() {
       <Wrapper className='my-8'>
         {selected !== undefined && (
           <ImageFull
-            image={safeImageSrc(resto?.images[selected].toString()) ?? noImage}
+            image={
+              safeImageSrc(resto?.images?.[selected]?.toString() ?? '') ??
+              noImage
+            }
           />
         )}
         <div className='flex w-full gap-x-4'>
@@ -162,7 +181,7 @@ export default function RestoDetail() {
                 key={index}
                 variant='outline'
                 size='md'
-                className={`text-primary-100 text-md border-primary-100/50 ${selectedMenu.toLocaleLowerCase() === menu.title.toLocaleLowerCase() ? 'bg-primary-100/10' : 'bg-white'} hover:text-primary-100 px-4 py-2`}
+                className={`text-primary-100 text-md border-primary-100/50 ${selectedMenu.toLowerCase() === menu.title.toLowerCase() ? 'bg-primary-100/10' : 'bg-white'} hover:text-primary-100 px-4 py-2`}
                 onClick={() => setSelectedMenu(menu.title)}
               >
                 {menu.title}
@@ -198,7 +217,7 @@ export default function RestoDetail() {
           )}
           <div className='grid w-full justify-between gap-y-6 md:grid-cols-4 lg:grid-cols-5'>
             {itemFilter?.map((item) => (
-              <ItemCard key={item.id} restoId={Number(id)} cItem={item} />
+              <ItemCard key={item.id} restoId={restoId} cItem={item} />
             ))}
           </div>
         </div>

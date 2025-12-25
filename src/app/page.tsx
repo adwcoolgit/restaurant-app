@@ -3,8 +3,7 @@
 import { Header } from '@/components/header/partials/header';
 import { PopupMessage } from '@/components/popup-message';
 import { loginUserSKey, User } from '@/features/auth/type';
-import { ClearStorage } from '@/functions/user-function';
-import { removeItems, useLocalStorageState } from '@/lib/storages';
+import { useLocalStorageState } from '@/lib/storages';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import imgHero from '@/../public/images/hero.png';
@@ -20,8 +19,6 @@ export default function Home() {
   const { data: cartSummaryData } = useCartSummary(); // just to keep the cart summary updated
   const [savedUser] = useLocalStorageState<User>(loginUserSKey(), initUser);
   const [user, setUser] = useState<User>(initUser);
-
-  // removeItems();
 
   useEffect(() => {
     setUser(savedUser);
