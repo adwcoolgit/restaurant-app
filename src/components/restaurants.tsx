@@ -1,7 +1,4 @@
-import {
-  Props,
-  restaurantsStorageKey,
-} from '@/features/restaurants/get-restaurants.service';
+import { Props } from '@/features/restaurants/get-restaurants.service';
 import { Restaurant, Restaurants as Resto } from '@/features/restaurants/type';
 import { useLocalStorageState } from '@/lib/storages';
 import { ComponentProps } from '@/types/component-type';
@@ -14,14 +11,17 @@ import { RootState } from '@/states/store';
 import { useEffect, useState } from 'react';
 import { InfiniteData } from '@tanstack/react-query';
 import { useQuerySearch } from '@/hooks/useQuerySearch';
-import { QueryProps } from '@/features/restaurants/search-restaurants.service';
+import {
+  QueryProps,
+  restaurantsSKey,
+} from '@/features/restaurants/search-restaurants.service';
 import { Button } from './ui/button';
 
 const initResto: Restaurant = {};
 
 export const Restaurants: React.FC<ComponentProps> = ({ className }) => {
   const [restaurant, hydrated] = useLocalStorageState<Restaurant>(
-    restaurantsStorageKey(),
+    restaurantsSKey(),
     initResto
   );
   const [list, setList] = useState<InfiniteData<Resto>>();
@@ -72,14 +72,14 @@ export const Restaurants: React.FC<ComponentProps> = ({ className }) => {
     <Wrapper>
       <div className='flex w-full flex-col gap-y-8'>
         <div className='flex w-full justify-between'>
-          <p className='text-display-lg text-center font-extrabold'>
+          <p className='text-display-xs md:text-display-lg text-center font-extrabold'>
             Recomended
           </p>
-          <p className='text-primary-100 cursor-pointer text-center text-lg font-extrabold'>
+          <p className='text-primary-100 text-md cursor-pointer text-center font-extrabold sm:text-lg'>
             See All
           </p>
         </div>
-        <div className='grid w-auto grid-cols-5 flex-wrap justify-start gap-x-5 gap-y-5 border-0'>
+        <div className='grid w-full grid-cols-1 justify-start gap-y-5 border-0 md:w-auto md:grid-cols-5 md:flex-wrap md:gap-x-5'>
           {data?.map((resto) => (
             <RestoCard key={resto.name} {...resto} />
           ))}

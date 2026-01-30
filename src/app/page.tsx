@@ -26,34 +26,41 @@ export default function Home() {
 
   return (
     <div className='flex flex-col gap-y-12'>
-      <Wrapper className='bg-foreground h-206.75 w-full'>
+      <Wrapper className='bg-foreground h-162 w-full md:h-206.75'>
         <Image
           src={imgHero}
           alt='burger-background'
           fill
-          className='md:object-contain'
+          className='object-cover md:object-contain'
         />
         <div className='absolute left-0 mt-0 h-full w-full bg-linear-to-t from-black from-0% to-transparent to-100%'></div>
         <Header
           isDark={true}
           className='absolute top-0 left-0 mx-0 w-full border-0 border-white bg-transparent'
         />
-        <div className='absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col gap-y-10 border-0 border-white md:w-178'>
-          <div className='flex-center flex-col text-white'>
-            <h1 className='md:text-display-2xl text-display-lg text-center font-extrabold text-inherit'>
+        <div className='absolute top-1/2 left-1/2 flex w-full -translate-x-1/2 -translate-y-1/2 flex-col border-0 border-white px-5.5 md:w-178 md:px-0'>
+          <div className='flex-center flex-col border-0 border-neutral-100 text-white'>
+            <h1 className='md:text-display-2xl text-display-lg leading-display-lg md:leading-2xl text-center font-extrabold text-inherit'>
               Explore Culinary Experiences
             </h1>
-            <h3 className='md:text-display-xs text-center text-lg font-bold text-inherit'>
+            <h3 className='md:text-display-xs leading-lg md:leading-display-xs text-center text-lg font-bold text-inherit'>
               Search and refine your choice to discover the perfect restaurant.
             </h3>
           </div>
-          <SearchBox sizes='xl' className='mx-auto justify-center md:w-151' />
+          <SearchBox
+            className='mx-auto mt-5 w-full justify-center border-0 border-neutral-100 md:mt-10 md:w-151'
+            placeholder='Search for restaurant, food or drink'
+          />
         </div>
       </Wrapper>
-      <Wrapper className='w-full'>
-        <div className='mx-0 flex w-full justify-between'>
+      <Wrapper className='flex w-full justify-center border-0'>
+        <div className='mx-0 grid w-full grid-cols-3 justify-between gap-x-4 gap-y-6 md:grid-cols-6 md:gap-x-6'>
           {menuBarItems.map((menu) => (
-            <MenuCard key={menu.id} {...menu} />
+            <MenuCard
+              key={menu.id}
+              {...menu}
+              className='flex w-full justify-center border-0'
+            />
           ))}
         </div>
       </Wrapper>

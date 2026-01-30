@@ -7,17 +7,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import { QueryProps } from '@/features/restaurants/search-restaurants.service';
 import { querySearch } from '@/states/slices/querySlice';
-import { size } from 'zod';
 
 interface SearchBoxProps {
   className?: string;
-  sizes: 'default' | 'sm' | 'md' | 'lg' | 'xl' | null | undefined;
   placeholder?: string;
 }
 
 export const SearchBox: React.FC<SearchBoxProps> = ({
   className,
-  sizes,
   placeholder,
 }) => {
   const dispatch = useDispatch();
@@ -43,7 +40,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
 
   return (
     <div
-      className={cn('relative hidden w-auto md:block', className)}
+      className={cn('relative block w-auto', className)}
       onClick={() => {
         dispatch(querySearch(params));
       }}
@@ -52,14 +49,13 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
         placeholder={placeholder}
         variant={'search'}
         value={searchValue}
-        className='bg-background hidden w-full md:block'
+        className='bg-background leading-sm md:leading-md font-regular md:text-md block w-full pr-4 pl-10 text-sm tracking-tight text-inherit placeholder:text-neutral-600 md:pr-8 md:pl-12'
         onChange={onChange}
-        sizes={sizes}
       />
       <Button
         variant={'borderless'}
         size={'icon-sm'}
-        className={`absolute top-1/2 ${sizes === 'md' ? 'left-3' : sizes === 'lg' ? 'left-4' : 'left-6.5'} z-50 flex size-fit h-full -translate-y-1/2 rounded-none border-0`}
+        className={`absolute top-1/2 left-4 z-50 flex size-fit h-full -translate-y-1/2 rounded-none border border-0 md:left-5 lg:left-6.5`}
       >
         <Search size={18} className='text-neutral-500' />
       </Button>

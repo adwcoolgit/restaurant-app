@@ -11,6 +11,7 @@ interface UIState {
   querySearch: string;
   username: string;
   isFullImage: boolean;
+  hamburgerOpen?: boolean;
 }
 
 const initialState: UIState = {
@@ -22,6 +23,7 @@ const initialState: UIState = {
   querySearch: '',
   username: '',
   isFullImage: false,
+  hamburgerOpen: false,
 };
 
 const uiSlice = createSlice({
@@ -58,6 +60,9 @@ const uiSlice = createSlice({
     fullImage: (state, action: PayloadAction<boolean>) => {
       state.isFullImage = action.payload;
     },
+    hamburgerState: (state, action: PayloadAction<boolean>) => {
+      state.hamburgerOpen = action.payload;
+    },
   },
 });
 
@@ -72,5 +77,6 @@ export const {
   findUserName,
   clearAll,
   fullImage,
+  hamburgerState,
 } = uiSlice.actions;
 export default uiSlice.reducer;

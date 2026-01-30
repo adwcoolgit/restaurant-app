@@ -39,7 +39,7 @@ export type UseRestaurantsParams = {
   param: QueryProps;
 };
 
-export const restaurantsStorageKey = () => 'restaurants';
+export const restaurantsSKey = () => 'restaurants';
 export const restaurantsQueryKey = (param: QueryProps) => [
   'restaurants',
   param,

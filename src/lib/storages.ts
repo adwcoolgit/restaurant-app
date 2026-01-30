@@ -8,6 +8,7 @@ import {
   isLoginSKey,
 } from '@/features/auth/type';
 import { cartSummaryQueryKey } from '@/features/cart/cart-summary.service';
+import { restaurantsSKey } from '@/features/restaurants/search-restaurants.service';
 import { IsLogin } from '@/states/slices/authSlice';
 import { setToast } from '@/states/slices/uiSlice';
 import { useQueryClient } from '@tanstack/react-query';
@@ -90,6 +91,8 @@ export const removeItems = () => {
   if (typeof window === 'undefined') return;
   removeItem(loginTokenSKey());
   removeItem(loginUserSKey());
+  localStorage.setItem(isLoginSKey(), 'false');
+  removeItem(restaurantsSKey());
 
   return null;
 };
@@ -166,7 +169,7 @@ export function useLocalStorageState<T>(key: string, initial: T) {
         } catch {}
         return;
       }
-    } catch {
+    } catch (err) {
       dispatch(setToast('[useLocalStorageState] hydrate error'));
     } finally {
       setHydrated(true);

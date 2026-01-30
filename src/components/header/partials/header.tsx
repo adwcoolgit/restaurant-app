@@ -29,6 +29,9 @@ export const Header: React.FC<Props> = ({ className, isDark }) => {
   const [savedUser] = useLocalStorageState<User>(loginUserSKey(), initUser);
   const [user, setUser] = useState<User>(initUser);
   const [removeQuery] = useRemoveQuery();
+  const hamburgerOpen = useSelector(
+    (state: RootState) => state.ui.hamburgerOpen
+  );
 
   if (typeof window !== 'undefined') {
     // localStorage.clear();
@@ -51,7 +54,7 @@ export const Header: React.FC<Props> = ({ className, isDark }) => {
       )}
     >
       <Wrapper className='flex-between'>
-        <Logo className='' />
+        <Logo className={cn(`${hamburgerOpen === true ? 'hidden' : 'flex'}`)} />
         {hydrated && (isLogin ? <ProfileImage {...user} /> : <AuthButton />)}
       </Wrapper>
     </header>

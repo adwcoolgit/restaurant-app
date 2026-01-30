@@ -39,5 +39,4 @@ export type UseFeedsParams = {
   params: Props;
 };
 
-export const restaurantsStorageKey = () => 'restorants';
 export const restaurantsQueryKey = (params: Props) => ['restorants', params];

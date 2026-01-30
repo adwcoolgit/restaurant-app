@@ -6,7 +6,7 @@ export const Wrapper: React.FC<ComponentProps> = ({ children, className }) => {
     <>
       <section
         className={cn(
-          'custom-container font-nunito flex-center relative h-fit w-full px-4 md:px-30',
+          'custom-container font-nunito flex-center relative h-fit w-full border-0 px-4 md:px-30',
           className
         )}
       >

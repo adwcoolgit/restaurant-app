@@ -11,7 +11,7 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  if (typeof window !== undefined) {
+  if (typeof window !== 'undefined') {
     let token: string | null;
     token = '';
 
@@ -42,6 +42,36 @@ axiosInstance.interceptors.request.use((config) => {
           ...(config.headers ?? {}),
           Authorization: `Bearer ${token}`,
         } as any;
+      }
+    } else {
+      // ensure Authorization header is removed when no token available
+      if (config.headers) {
+        if (typeof (config.headers as AxiosHeaders).delete === 'function') {
+          try {
+            (config.headers as AxiosHeaders).delete('Authorization');
+            (config.headers as AxiosHeaders).delete('authorization');
+          } catch (e) {
+            // ignore
+          }
+        } else {
+          const ch = { ...(config.headers ?? {}) } as any;
+          delete ch.Authorization;
+          delete ch.authorization;
+          config.headers = ch;
+        }
+      }
+
+      // also remove from instance defaults (common) so other requests won't reuse it
+      try {
+        const defaultsAny = axiosInstance.defaults.headers as any;
+        if (defaultsAny) {
+          if (defaultsAny.common) {
+            delete defaultsAny.common.Authorization;
+            delete defaultsAny.common.authorization;
+          }
+        }
+      } catch (e) {
+        // ignore
       }
     }
   }
